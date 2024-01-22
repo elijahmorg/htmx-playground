@@ -17,18 +17,18 @@ import (
 // Cancel ->	 GET /company -> nothing, companys.html
 
 func index(r *http.Request) *web.Response {
-	return web.HTML(http.StatusOK, html, "index.html", data, nil)
+	return web.HTML(http.StatusOK, html, "index.html", devices, nil)
 }
 
 // GET /company/add
 func companyAdd(r *http.Request) *web.Response {
-	return web.HTML(http.StatusOK, html, "company-add.html", data, nil)
+	return web.HTML(http.StatusOK, html, "company-add.html", devices, nil)
 }
 
 // /GET company/edit/{id}
 func companyEdit(r *http.Request) *web.Response {
 	id, _ := web.PathLast(r)
-	row := getCompanyByID(id)
+	row := getDeviceByID(id)
 	return web.HTML(http.StatusOK, html, "row-edit.html", row, nil)
 }
 
@@ -42,39 +42,41 @@ func companies(r *http.Request) *web.Response {
 	switch r.Method {
 
 	case http.MethodDelete:
-		deleteCompany(id)
-		return web.HTML(http.StatusOK, html, "companies.html", data, nil)
+		deleteDevice(id)
+		return web.HTML(http.StatusOK, html, "companies.html", devices, nil)
 
 	//cancel
 	case http.MethodGet:
 		if segments > 1 {
 			//cancel edit
-			row := getCompanyByID(id)
+			row := getDeviceByID(id)
 			return web.HTML(http.StatusOK, html, "row.html", row, nil)
 		} else {
 			//cancel add
-			return web.HTML(http.StatusOK, html, "companies.html", data, nil)
+			return web.HTML(http.StatusOK, html, "companies.html", devices, nil)
 		}
 
 	//save edit
 	case http.MethodPut:
-		row := getCompanyByID(id)
+		row := getDeviceByID(id)
 		r.ParseForm()
-		row.Company = r.Form.Get("company")
-		row.Contact = r.Form.Get("contact")
-		row.Country = r.Form.Get("country")
-		updateCompany(row)
+		row.Hostname = r.Form.Get("hostname")
+		row.IPAddress = r.Form.Get("ipaddress")
+		row.UserName = r.Form.Get("username")
+		updateDevice(row)
 		return web.HTML(http.StatusOK, html, "row.html", row, nil)
 
 	//save add
 	case http.MethodPost:
-		row := Company{}
+		row := Device{}
 		r.ParseForm()
-		row.Company = r.Form.Get("company")
-		row.Contact = r.Form.Get("contact")
-		row.Country = r.Form.Get("country")
-		addCompany(row)
-		return web.HTML(http.StatusOK, html, "companies.html", data, nil)
+		row.Hostname = r.Form.Get("hostname")
+		row.IPAddress = r.Form.Get("ipaddress")
+		row.UserName = r.Form.Get("username")
+		row.State = r.Form.Get("state")
+		row.Notes = r.Form.Get("notes")
+		addDevice(row)
+		return web.HTML(http.StatusOK, html, "companies.html", devices, nil)
 	}
 
 	return web.Empty(http.StatusNotImplemented)
