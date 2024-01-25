@@ -21,22 +21,12 @@
   <td class="whitespace-nowrap px-6 py-4">
     <select
       name="state"
-      id="device-state-select"
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       data-include-edit="{{.ID}}"
     />
-      <option value="{{.State}}">{{.State}}</option>
-      <option value="In Use">In Use</option>
-      <option value="Under Maintenance">Under Maintenance</option>
-      <option value="Available">Available</option>
-      <option value="Needs Attention/broken">Needs Attention/broken</option>
-    <!-- <input -->
-    <!--   type="text" -->
-    <!--   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" -->
-    <!--   data-include-edit="{{.ID}}" -->
-    <!--   name="state" -->
-    <!--   value="{{.State}}" -->
-    <!-- /> -->
+      {{range .DeviceStateOptions}}
+      <option value="{{.Value}}" {{if eq .State .Value}}selected="selected"{{end}}>{{.Value}}</option>
+      {{end}}
   </td>
   <td class="whitespace-nowrap px-6 py-4">
     <input
@@ -62,7 +52,7 @@
       hx-target="#datarow-{{.ID}}"
       hx-swap="outerHTML"
       hx-indicator="#processing"
-      hx-include="input[data-include-edit='{{.ID}}']"
+      hx-include="input[data-include-edit='{{.ID}}'], select[data-include-edit='{{.ID}}']"
       class="inline-flex items-center h-8 px-4 m-2 text-sm text-blue-100 transition-colors duration-150 bg-blue-700 rounded-lg focus:shadow-outline hover:bg-blue-800"
       href=""
       >Save</a

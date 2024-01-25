@@ -1,11 +1,20 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 var (
 	data    []Company
 	devices []Device
+
 )
+
+type StateEnum struct {
+	State   string
+	Display string
+}
 
 type Company struct {
 	ID      string
@@ -15,12 +24,18 @@ type Company struct {
 }
 
 type Device struct {
-	ID        string
-	Hostname  string
-	IPAddress string
-	State     string
-	UserName  string
-	Notes     string
+	ID                 string
+	Hostname           string
+	IPAddress          string
+	State              string
+	UserName           string
+	Notes              string
+	DeviceStateOptions []DeviceState
+}
+
+type DeviceState struct {
+	Value string
+	State string
 }
 
 func init() {
@@ -133,6 +148,7 @@ func getDeviceByID(id string) Device {
 			break
 		}
 	}
+	result.DeviceStateOptions = SetDeviceStateOptions(result.State)
 	return result
 }
 
@@ -164,11 +180,11 @@ func addDevice(device Device) {
 
 	devices = append(devices, Device{
 		ID:        id,
-		Hostname:    device.Hostname,
+		Hostname:  device.Hostname,
 		UserName:  device.UserName,
 		IPAddress: device.IPAddress,
-		Notes: device.Notes,
-		State: device.State,
+		Notes:     device.Notes,
+		State:     device.State,
 	})
 }
 
@@ -180,4 +196,19 @@ func deleteDevice(id string) {
 		}
 	}
 	devices = result
+}
+
+func SetDeviceStateOptions(state string) []DeviceState {
+	// <!-- <option value="In Use" selected="selected">In Use</option> -->
+	// <!-- <option value="Under Maintenance">Under Maintenance</option> -->
+	// <!-- <option value="Available">Available</option> -->
+	// <!-- <option value="Needs Attention/broken">Needs Attention/broken</option> -->
+	// <!-- <option value="Offline">Offline</option> -->
+	s := []DeviceState{}
+	for _, value := range []string{"In Use", "Under Maintenance", "Available", "Needs Attention/broken", "Offline"} {
+		fmt.Printf("Value: %s, State: %s\n", value, state)
+		s = append(s, DeviceState{Value: value, State: state})
+	}
+	fmt.Printf("DeviceStateOptons %v\n", s)
+	return s
 }

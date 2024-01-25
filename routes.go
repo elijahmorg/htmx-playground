@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/jritsema/gotoolbox/web"
@@ -29,6 +30,8 @@ func companyAdd(r *http.Request) *web.Response {
 func companyEdit(r *http.Request) *web.Response {
 	id, _ := web.PathLast(r)
 	row := getDeviceByID(id)
+	fmt.Printf("Device Row state: %v\n", row.State)
+	fmt.Printf("Device opts: %v\n", row.DeviceStateOptions)
 	return web.HTML(http.StatusOK, html, "row-edit.html", row, nil)
 }
 
@@ -45,7 +48,7 @@ func companies(r *http.Request) *web.Response {
 		deleteDevice(id)
 		return web.HTML(http.StatusOK, html, "companies.html", devices, nil)
 
-	//cancel
+	//cancel +      var cert LCSCert
 	case http.MethodGet:
 		if segments > 1 {
 			//cancel edit
@@ -63,6 +66,8 @@ func companies(r *http.Request) *web.Response {
 		row.Hostname = r.Form.Get("hostname")
 		row.IPAddress = r.Form.Get("ipaddress")
 		row.UserName = r.Form.Get("username")
+		row.State = r.Form.Get("state")
+		row.Notes = r.Form.Get("notes")
 		updateDevice(row)
 		return web.HTML(http.StatusOK, html, "row.html", row, nil)
 

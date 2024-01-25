@@ -19,13 +19,16 @@
     />
   </td>
   <td class="whitespace-nowrap px-6 py-4">
-    <input
-      type="text"
+    <select
+      name="state"
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       data-include-add=""
-      name="state"
-      value=""
     />
+      <option value="In Use">In Use</option>
+      <option value="Under Maintenance">Under Maintenance</option>
+      <option value="Available">Available</option>
+      <option value="Needs Attention/broken">Needs Attention/broken</option>
+      <option value="Offline">Offline</option>
   </td>
   <td class="whitespace-nowrap px-6 py-4">
     <input
@@ -50,7 +53,7 @@
       hx-post="/company/"
       hx-target="#companies"
       hx-indicator="#processing"
-      hx-include="input[data-include-add]"
+      hx-include="input[data-include-add], select[data-include-add]"
       class="inline-flex items-center h-8 px-4 m-2 text-sm text-blue-100 transition-colors duration-150 bg-blue-700 rounded-lg focus:shadow-outline hover:bg-blue-800"
       href=""
       >Save</a
