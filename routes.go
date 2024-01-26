@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/jritsema/go-htmx-starter/lib"
 	"github.com/jritsema/gotoolbox/web"
 )
 
@@ -23,7 +24,7 @@ func index(r *http.Request) *web.Response {
 
 // GET /company/add
 func companyAdd(r *http.Request) *web.Response {
-	return web.HTML(http.StatusOK, html, "company-add.html", devices, nil)
+	return web.HTML(http.StatusOK, html, "company-add.html", AddDevicePageInfo, nil)
 }
 
 // /GET company/edit/{id}
@@ -66,7 +67,7 @@ func companies(r *http.Request) *web.Response {
 		row.Hostname = r.Form.Get("hostname")
 		row.IPAddress = r.Form.Get("ipaddress")
 		row.UserName = r.Form.Get("username")
-		row.State = r.Form.Get("state")
+		row.State, _ = lib.ParseStateEnum(r.Form.Get("state"))
 		row.Notes = r.Form.Get("notes")
 		updateDevice(row)
 		return web.HTML(http.StatusOK, html, "row.html", row, nil)
@@ -78,7 +79,7 @@ func companies(r *http.Request) *web.Response {
 		row.Hostname = r.Form.Get("hostname")
 		row.IPAddress = r.Form.Get("ipaddress")
 		row.UserName = r.Form.Get("username")
-		row.State = r.Form.Get("state")
+		row.State, _ = lib.ParseStateEnum(r.Form.Get("state"))
 		row.Notes = r.Form.Get("notes")
 		addDevice(row)
 		return web.HTML(http.StatusOK, html, "companies.html", devices, nil)

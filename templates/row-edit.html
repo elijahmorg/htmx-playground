@@ -24,8 +24,9 @@
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       data-include-edit="{{.ID}}"
     />
+      {{$state := .State}}
       {{range .DeviceStateOptions}}
-      <option value="{{.Value}}" {{if eq .State .Value}}selected="selected"{{end}}>{{.Value}}</option>
+      <option value="{{.State}}" {{if eq .State $state}}selected="selected"{{end}}>{{.DisplayValue}}</option>
       {{end}}
   </td>
   <td class="whitespace-nowrap px-6 py-4">

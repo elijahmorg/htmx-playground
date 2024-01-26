@@ -29,3 +29,7 @@ var (
 		StateEnumNeedsAttention: "Needs Attention",
 	}
 )
+
+func (s StateEnum) GetDisplayValue() string {
+	return StateDisplay[s]
+}

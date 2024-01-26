@@ -3,35 +3,50 @@ package main
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/jritsema/go-htmx-starter/lib"
 )
 
 var (
 	devices []Device
-
+	AddDevicePageInfo AddDevicePage
+	PossibleDeviceStates []DeviceState
 )
 
 type Device struct {
 	ID                 string
 	Hostname           string
 	IPAddress          string
-	State              string
+	State              lib.StateEnum
 	UserName           string
 	Notes              string
 	DeviceStateOptions []DeviceState
 }
 
-type DeviceState struct {
-	Value string
-	State string
+type AddDevicePage struct {
+	Devices []Device
+	PossibleDeviceStates []DeviceState
 }
 
+
+//  DeviceState is for tracking a device's current state
+// Value is the string value of State
+// DisplayValue is the string that should be displayed to the end user
+type DeviceState struct {
+	DisplayValue string
+	State lib.StateEnum
+}
+
+
+
 func init() {
+	fmt.Println("Init Data")
 	devices = []Device{
 		{
 			ID:        "1",
 			Hostname:  "lab-label1",
 			IPAddress: "10.80.80.10",
-			State:     "available",
+			State:     lib.StateEnumAvailable,
 			UserName:  "",
 			Notes:     "Custom config for hardware bug",
 		},
@@ -39,7 +54,7 @@ func init() {
 			ID:        "2",
 			Hostname:  "lab-label2",
 			IPAddress: "10.80.80.11",
-			State:     "in use",
+			State:     lib.StateEnumInUse,
 			UserName:  "elimorga",
 			Notes:     "",
 		},
@@ -47,10 +62,21 @@ func init() {
 			ID:        "3",
 			Hostname:  "lab-label3",
 			IPAddress: "10.80.80.12",
-			State:     "offline",
+			State:     lib.StateEnumOffline,
 			UserName:  "jenkins",
 			Notes:     "under maintenance",
 		},
+	}
+	MakePossibleDeviceStates()
+	AddDevicePageInfo.Devices = devices
+	AddDevicePageInfo.PossibleDeviceStates = PossibleDeviceStates
+}
+
+func MakePossibleDeviceStates() {
+	// I need a range of values with state key, and display value
+	for _, state := range lib.StateEnumValues() {
+		displayValue := lib.StateDisplay[state]
+		PossibleDeviceStates = append(PossibleDeviceStates, DeviceState{DisplayValue: displayValue, State: state})
 	}
 }
 
@@ -62,7 +88,7 @@ func getDeviceByID(id string) Device {
 			break
 		}
 	}
-	result.DeviceStateOptions = SetDeviceStateOptions(result.State)
+	result.DeviceStateOptions = GetDeviceStateOptions()
 	return result
 }
 
@@ -112,17 +138,8 @@ func deleteDevice(id string) {
 	devices = result
 }
 
-func SetDeviceStateOptions(state string) []DeviceState {
-	// <!-- <option value="In Use" selected="selected">In Use</option> -->
-	// <!-- <option value="Under Maintenance">Under Maintenance</option> -->
-	// <!-- <option value="Available">Available</option> -->
-	// <!-- <option value="Needs Attention/broken">Needs Attention/broken</option> -->
-	// <!-- <option value="Offline">Offline</option> -->
-	s := []DeviceState{}
-	for _, value := range []string{"In Use", "Under Maintenance", "Available", "Needs Attention/broken", "Offline"} {
-		fmt.Printf("Value: %s, State: %s\n", value, state)
-		s = append(s, DeviceState{Value: value, State: state})
-	}
-	fmt.Printf("DeviceStateOptons %v\n", s)
+func GetDeviceStateOptions() []DeviceState {
+	s := make([]DeviceState, len(PossibleDeviceStates))
+	copy(s, PossibleDeviceStates)
 	return s
 }

@@ -24,11 +24,9 @@
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       data-include-add=""
     />
-      <option value="In Use">In Use</option>
-      <option value="Under Maintenance">Under Maintenance</option>
-      <option value="Available">Available</option>
-      <option value="Needs Attention/broken">Needs Attention/broken</option>
-      <option value="Offline">Offline</option>
+      {{range .PossibleDeviceStates}}
+      <option value="{{.State}}">{{.DisplayValue}}</option>
+      {{end}}
   </td>
   <td class="whitespace-nowrap px-6 py-4">
     <input
